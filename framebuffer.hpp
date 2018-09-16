@@ -2,12 +2,13 @@
 #include <cstdlib>
 #include <fcntl.h>
 #include <iostream>
+#include <linux/fb.h>
 #include <png.h>
 #include <setjmp.h>
-#include <unistd.h>
+#include <stdexcept>
 #include <sys/ioctl.h>
 #include <sys/mman.h>
-#include <linux/fb.h>
+#include <unistd.h>
 
 struct Point {
     uint32_t x;
@@ -33,27 +34,28 @@ struct Color {
 };
 
 class Image {
-public:
-    Image(const char * image);
+  public:
+    Image(const char *image);
     Color get_pixel(uint32_t x, uint32_t y) const;
     ~Image();
 
-    png_byte * raw;
+    png_byte *raw;
     uint32_t width;
     uint32_t height;
-    int depth;
+    int color_bytes;
 };
 
 class FrameBuffer {
     struct fb_var_screeninfo vinfo;
     struct fb_fix_screeninfo finfo;
-    char * buffer;
+    char *buffer;
     long int screen_size;
     int fbfd;
-public:
-    FrameBuffer(const char * device);
+
+  public:
+    FrameBuffer(const char *device);
     ~FrameBuffer();
     void draw_pixel(Point point, Color color);
     void draw_rectangle(Rect rect, Color color);
-    void draw_image(Point point, const Image & image);
+    void draw_image(Point point, const Image &image);
 };
