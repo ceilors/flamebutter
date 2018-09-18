@@ -42,7 +42,7 @@ class Image {
     png_byte *raw;
     uint32_t width;
     uint32_t height;
-    int color_bytes;
+    uint8_t color_channels;
 };
 
 class FrameBuffer {
