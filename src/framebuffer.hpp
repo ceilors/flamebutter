@@ -22,8 +22,10 @@ class FrameBuffer {
     int fbfd;
 
   public:
+    FrameBuffer() {}
     FrameBuffer(const char *device);
     ~FrameBuffer();
+
     void draw_pixel(Point point, Color color);
     void draw_rectangle(Rect rect, Color color);
     void draw_image(Point point, const Image &image);

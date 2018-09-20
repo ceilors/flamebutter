@@ -8,10 +8,11 @@
 #include "structs.hpp"
 
 class Image {
-  public:
+public:
     Image(const char *image);
-    Color get_pixel(uint32_t x, uint32_t y) const;
     ~Image();
+
+    Color get_pixel(uint32_t x, uint32_t y) const;
 
     png_byte *raw;
     uint32_t width;
