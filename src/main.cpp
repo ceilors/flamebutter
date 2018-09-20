@@ -1,8 +1,10 @@
 #include "window.hpp"
 #include "image.hpp"
 #include "structs.hpp"
+#include "font.hpp"
 
-Image i = Image("test-img.png");
+Font f = Font("resource/FiraMono-Regular.ttf", 50);
+Image i = Image("resource/test-img.png");
 Point pos = {0, 0};
 
 void keyboard(Window * w, char key) {
@@ -35,6 +37,7 @@ void keyboard(Window * w, char key) {
 
 void render(FrameBuffer & fb) {
     fb.draw_image(pos, i);
+    f.render(fb, {10, 500}, "OMG! It's FreeType!");
 }
 
 int main() {

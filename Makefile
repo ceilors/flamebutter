@@ -1,6 +1,6 @@
 CXX=g++
-CFLAGS=-std=c++14 -Wall $(shell pkg-config --cflags libpng)
-LFLAGS=$(shell pkg-config --libs libpng)
+CFLAGS=-std=c++14 -Wall $(shell pkg-config --cflags libpng freetype2)
+LFLAGS=$(shell pkg-config --libs libpng freetype2)
 app=flamebutter
 objects := $(patsubst %.cpp,%.o,$(wildcard src/*.cpp))
 
