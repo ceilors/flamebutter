@@ -21,8 +21,7 @@ class FrameBuffer {
     long int screen_size;
     int fbfd;
 
-  public:
-    FrameBuffer() {}
+public:
     FrameBuffer(const char *device);
     ~FrameBuffer();
 
