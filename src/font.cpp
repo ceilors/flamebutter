@@ -29,7 +29,7 @@ void Font::render(FrameBuffer & fb, Point pos, const char * text) {
         for (uint32_t y = 0; y < slot->bitmap.rows; y++) {
             for (uint32_t x = 0; x < slot->bitmap.width; x++) {
                 auto value = slot->bitmap.buffer[y * slot->bitmap.width + x];
-                fb.draw_pixel({pos.x + x, pos.y + y}, {value, value, value});
+                fb.draw_pixel({pos.x + x, pos.y + y - slot->bitmap_top}, {value, value, value});
             }
         }
         // move
