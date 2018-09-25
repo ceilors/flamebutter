@@ -36,6 +36,7 @@ void keyboard(Window * w, char key) {
 }
 
 void render(FrameBuffer & fb) {
+    fb.draw_rectangle({pos.x - 5, pos.y - 5, pos.x + i.width + 5, pos.y + i.height + 5}, {0, 0, 0});
     fb.draw_image(pos, i);
     f.render(fb, {10, 500}, "OMG! It's FreeType!");
 }

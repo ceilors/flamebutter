@@ -35,6 +35,8 @@ void Window::main_loop() {
 
     FrameBuffer fb = FrameBuffer("/dev/fb0");
 
+    fb.clear_screen({0, 0, 0});
+
     while (!quit_flag) {
         char input_key;
         int readed = read(STDIN_FILENO, &input_key, 1);
@@ -43,6 +45,7 @@ void Window::main_loop() {
         }
         if (render_func) {
             render_func(fb);
+            fb.swap_buffer();
         }
         usleep(1E3);
     }

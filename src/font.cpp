@@ -36,3 +36,9 @@ void Font::render(FrameBuffer & fb, Point pos, const char * text) {
         pos.x += slot->bitmap.width + (slot->bitmap.width / 3);
     }
 }
+
+void Font::render(FrameBuffer & fb, Point pos, uint32_t value) {
+    std::ostringstream buffer;
+    buffer << value;
+    render(fb, pos, buffer.str().c_str());
+}
