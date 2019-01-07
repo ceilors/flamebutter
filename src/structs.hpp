@@ -7,6 +7,7 @@ struct Point {
     uint32_t x;
     uint32_t y;
 
+    Point() : x(0), y(0) {}
     Point(uint32_t _x, uint32_t _y) : x(_x), y(_y) {}
 };
 
@@ -26,8 +27,10 @@ struct Color {
     uint8_t red;
     uint8_t green;
     uint8_t blue;
+    uint8_t alpha;
 
-    Color(uint8_t r, uint8_t g, uint8_t b) : red(r), green(g), blue(b) {}
+    Color(uint8_t r, uint8_t g, uint8_t b) : red(r), green(g), blue(b), alpha(255) {}
+    Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a) : red(r), green(g), blue(b), alpha(a) {}
 };
 
 #endif

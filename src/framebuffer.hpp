@@ -33,11 +33,11 @@ public:
 
     void draw_pixel(Point point, Color color);
     void draw_rectangle(Rect rect, Color color);
-    void draw_image(Point point, const Image & image);
+    void draw_image(Point point, const Image * image);
 
     void draw_line(Rect l, Color color);
     void draw_framed_rect(Rect l, Color color);
-    void draw_image_rect(Rect wnd, Rect pos, const Image & image);
+    void draw_image_rect(Rect wnd, Rect pos, const Image * image);
 
     void clear_screen(Color color);
 
