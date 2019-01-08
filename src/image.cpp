@@ -1,13 +1,9 @@
 #include "image.hpp"
 
-Image::Image(const char *image) {
+Image::Image(FILE * f) {
     color_channels = 0;
     png_byte header[8];
-    FILE *f;
-
-    if (!(f = fopen(image, "r"))) {
-        throw std::runtime_error("fopen problem");
-    }
+    
     fread(header, 1, 8, f);
     int is_png = !png_sig_cmp(header, 0, 8);
     if (!is_png) {
@@ -93,6 +89,14 @@ Image::Image(const char *image) {
 
     png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
     delete[] row_pointers;
+}
+
+Image::Image(const char * image) {
+    FILE * f = fopen(image, "r");
+    if (!f) {
+        throw std::runtime_error("fopen problem");
+    }
+    new (this) Image(f);
     fclose(f);
 }
 

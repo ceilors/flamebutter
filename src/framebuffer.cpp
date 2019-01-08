@@ -25,7 +25,7 @@ FrameBuffer::~FrameBuffer() {
     close(fbfd);
 }
 
-void FrameBuffer::draw_pixel(Point point, Color color) {
+void FrameBuffer::draw_pixel(const Point point, const Color color) {
     long int location =
         (point.x + vinfo.xoffset) * (vinfo.bits_per_pixel / 8) + (point.y + vinfo.yoffset) * finfo.line_length;
     if (vinfo.bits_per_pixel == 32) {
@@ -49,7 +49,7 @@ void FrameBuffer::draw_rectangle(Rect rect, Color color) {
     }
 }
 
-void FrameBuffer::draw_image(Point point, const Image * image) {
+void FrameBuffer::draw_image(const Point point, const Image * image) {
     for (uint32_t y = 0; y < image->height; ++y) {
         for (uint32_t x = 0; x < image->width; ++x) {
             Color pixel = image->get_pixel(x, y);

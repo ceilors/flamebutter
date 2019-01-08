@@ -9,7 +9,8 @@
 
 class Image {
 public:
-    Image(const char *image);
+    Image(FILE * f);
+    Image(const char * image);
     ~Image();
 
     Color get_pixel(uint32_t x, uint32_t y) const;

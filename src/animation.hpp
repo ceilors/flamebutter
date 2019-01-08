@@ -12,12 +12,15 @@ class Animation {
     std::vector<Image *> images = {};
     uint32_t current_frame = 0;
     std::chrono::time_point<std::chrono::system_clock> last_time = std::chrono::system_clock::now();
-    void raw_render(FrameBuffer & fb, Point pos);
+    void raw_render(FrameBuffer & fb, const Point pos);
 public:
-    Animation(const char *fmt, uint32_t start, uint32_t stop);
+    uint32_t width = 0;
+    uint32_t height = 0;
+    Animation(const char * filename);
+    Animation(const char * fmt, uint32_t start, uint32_t stop);
     ~Animation();
-    void render(FrameBuffer & fb, Point pos, long int delay);
-    void render(FrameBuffer & fb, std::vector<Point> vpos, long int delay);
+    void render(FrameBuffer & fb, const Point pos, long int delay);
+    void render(FrameBuffer & fb, const std::vector<Point> vpos, long int delay);
 };
 
 #endif
