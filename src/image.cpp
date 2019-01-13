@@ -1,6 +1,6 @@
 #include "image.hpp"
 
-Image::Image(FILE * f) {
+PNGImage::PNGImage(FILE * f) {
     color_channels = 0;
     png_byte header[8];
     
@@ -69,7 +69,7 @@ Image::Image(FILE * f) {
 
     png_read_update_info(png_ptr, info_ptr);
     int row_bytes = png_get_rowbytes(png_ptr, info_ptr);
-    raw = new png_byte[row_bytes * height];
+    raw = (uint8_t *) new png_byte[row_bytes * height];
     if (!raw) {
         png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
         fclose(f);
@@ -91,18 +91,26 @@ Image::Image(FILE * f) {
     delete[] row_pointers;
 }
 
-Image::Image(const char * image) {
+PNGImage::PNGImage(const char * image) {
     FILE * f = fopen(image, "r");
     if (!f) {
         throw std::runtime_error("fopen problem");
     }
-    new (this) Image(f);
+    new (this) PNGImage(f);
     fclose(f);
 }
 
-Image::~Image() { delete[] raw; }
-
-Color Image::get_pixel(uint32_t x, uint32_t y) const {
-    uint32_t location = (y * width + x) * color_channels;
-    return {raw[location + 0], raw[location + 1], raw[location + 2], raw[location + 3]};
+RAWImage::RAWImage(const char * image) {
+    FILE * f = fopen(image, "r");
+    if (!f) {
+        throw std::runtime_error("fopen problem");
+    }
+    uint32_t pitch = 0;
+    color_channels = 4;
+    fread(&pitch, sizeof(uint32_t), 1, f);
+    width = pitch / color_channels;
+    fread(&height, sizeof(uint32_t), 1, f);
+    raw = new uint8_t [pitch * height];
+    fread(raw, pitch * height, 1, f);
+    fclose(f);
 }

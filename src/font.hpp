@@ -1,12 +1,14 @@
 #ifndef __FONT_HPP__
 #define __FONT_HPP__
 
-#include <sstream>
-#include <cstdint>
-#include <ft2build.h>
-#include FT_FREETYPE_H
 #include "framebuffer.hpp"
 #include "structs.hpp"
+
+#include <cstdint>
+#include <ft2build.h>
+#include <sstream>
+#include <stdarg.h>
+#include FT_FREETYPE_H
 
 
 class Font {
@@ -20,8 +22,7 @@ public:
     Font(const char * filename, uint16_t size);
     ~Font();
 
-    void render(FrameBuffer & fb, Point pos, const char * text);
-    void render(FrameBuffer & fb, Point pos, uint32_t value);
+    void render(FrameBuffer & fb, Point pos, const char * fmt, ...);
 };
 
 #endif

@@ -31,6 +31,15 @@ struct Color {
 
     Color(uint8_t r, uint8_t g, uint8_t b) : red(r), green(g), blue(b), alpha(255) {}
     Color(uint8_t r, uint8_t g, uint8_t b, uint8_t a) : red(r), green(g), blue(b), alpha(a) {}
+
+    // TODO: write normal blend function
+    Color blend(uint8_t r, uint8_t g, uint8_t b) const {
+        float a = alpha / 255.0;
+        r = (uint8_t)((float)red * a + (float)r * (1.0 - a));
+        g = (uint8_t)((float)green * a + (float)b * (1.0 - a));
+        b = (uint8_t)((float)blue * a + (float)g * (1.0 - a));
+        return Color(r, g, b);
+    }
 };
 
 #endif

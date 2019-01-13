@@ -1,5 +1,4 @@
 #include "animation.hpp"
-#include <iostream>
 
 Animation::Animation(const char * filename) {
     std::vector<uint32_t> addr;
@@ -16,7 +15,7 @@ Animation::Animation(const char * filename) {
     images.reserve(length);
     for (auto ptr : addr) {
         fseek(f, ptr, SEEK_SET);
-        images.push_back(new Image(f));
+        images.push_back(new PNGImage(f));
     }
 
     width = images[0]->width;
@@ -30,7 +29,7 @@ Animation::Animation(const char *fmt, uint32_t start, uint32_t stop) {
     images.reserve(stop - start + 1);
     for (uint32_t index = start; index <= stop; index++) {
         sprintf(img_name, fmt, index);
-        images.push_back(new Image(img_name));
+        images.push_back(new PNGImage(img_name));
     }
 
     width = images[0]->width;
@@ -44,7 +43,7 @@ Animation::~Animation() {
 }
 
 void Animation::raw_render(FrameBuffer & fb, const Point pos) {
-    fb.draw_image(pos, images[current_frame]);
+    fb.draw_image(pos, images[current_frame], true);
 }
 
 void Animation::render(FrameBuffer & fb, const Point pos, long int delay) {

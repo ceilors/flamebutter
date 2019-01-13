@@ -13,7 +13,15 @@ Font::~Font() {
     FT_Done_FreeType(library);
 }
 
-void Font::render(FrameBuffer & fb, Point pos, const char * text) {
+void Font::render(FrameBuffer & fb, Point pos, const char *fmt, ...) {
+    // prepare text
+    char text[1024] = {};
+    va_list arg;
+    va_start(arg, fmt);
+    vsnprintf(text, sizeof(text), fmt, arg);
+    va_end(arg);
+
+    // render char glyph
     slot = face->glyph;
     for (uint32_t n = 0; n < strlen(text); n++) {
         if (text[n] == ' ') {
@@ -35,10 +43,4 @@ void Font::render(FrameBuffer & fb, Point pos, const char * text) {
         // move
         pos.x += slot->bitmap.width + (slot->bitmap.width / 3);
     }
-}
-
-void Font::render(FrameBuffer & fb, Point pos, uint32_t value) {
-    std::ostringstream buffer;
-    buffer << value;
-    render(fb, pos, buffer.str().c_str());
 }

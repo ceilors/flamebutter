@@ -6,7 +6,7 @@
 
 const uint16_t font_size = 50;
 Font f = Font("resource/FiraMono-Regular.ttf", font_size);
-Image i = Image("resource/test-img.png");
+PNGImage i = PNGImage("resource/test-img.png");
 Animation a = Animation("resource/rick.pngz");
 Point ani_pos = {10, 10};
 Point fnt_pos = {10, a.height + font_size + 10};

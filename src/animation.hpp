@@ -9,7 +9,7 @@
 #include "image.hpp"
 
 class Animation {
-    std::vector<Image *> images = {};
+    std::vector<PNGImage *> images = {};
     uint32_t current_frame = 0;
     std::chrono::time_point<std::chrono::system_clock> last_time = std::chrono::system_clock::now();
     void raw_render(FrameBuffer & fb, const Point pos);
