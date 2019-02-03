@@ -25,10 +25,13 @@ FrameBuffer::~FrameBuffer() {
     close(fbfd);
 }
 
-void FrameBuffer::draw_pixel(const Point point, const Color color) {
+void FrameBuffer::draw_pixel(const Point point, Color color) {
     long int location =
         (point.x + vinfo.xoffset) * (vinfo.bits_per_pixel / 8) + (point.y + vinfo.yoffset) * finfo.line_length;
     if (vinfo.bits_per_pixel == 32) {
+        if (color.alpha < 255) {
+            color.blend(*(draw_buffer + location + 2), *(draw_buffer + location + 1), *(draw_buffer + location + 0));
+        }
         *(draw_buffer + location + 0) = color.blue;
         *(draw_buffer + location + 1) = color.green;
         *(draw_buffer + location + 2) = color.red;

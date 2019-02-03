@@ -31,7 +31,7 @@ public:
     FrameBuffer(const char *device);
     ~FrameBuffer();
 
-    void draw_pixel(const Point point, const Color color);
+    void draw_pixel(const Point point, Color color);
     void draw_rectangle(Rect rect, Color color);
     void draw_image(const Point point, const Image * image, bool ignore_alpha = false);
 
