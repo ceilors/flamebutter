@@ -1,9 +1,9 @@
 #include "animation.hpp"
 
-Animation::Animation(const char * filename) {
+Animation::Animation(const char *filename) {
     std::vector<uint32_t> addr;
     uint32_t length;
-    FILE * f = fopen(filename, "r");
+    FILE *f = fopen(filename, "r");
 
     fread(&length, sizeof(uint32_t), 1, f);
     addr.reserve(length);
@@ -18,8 +18,7 @@ Animation::Animation(const char * filename) {
         images.push_back(new PNGImage(f));
     }
 
-    width = images[0]->width;
-    height = images[0]->height;
+    size = images[0]->size;
 
     fclose(f);
 }
@@ -32,21 +31,18 @@ Animation::Animation(const char *fmt, uint32_t start, uint32_t stop) {
         images.push_back(new PNGImage(img_name));
     }
 
-    width = images[0]->width;
-    height = images[0]->height;
+    size = images[0]->size;
 }
 
 Animation::~Animation() {
-    for (auto & i : images) {
+    for (auto &i : images) {
         delete i;
     }
 }
 
-void Animation::raw_render(FrameBuffer & fb, const Point pos) {
-    fb.draw_image(pos, images[current_frame], true);
-}
+void Animation::raw_render(FrameBuffer &fb, const Point pos) { images[current_frame]->render(fb, pos, true); }
 
-void Animation::render(FrameBuffer & fb, const Point pos, long int delay) {
+void Animation::render(FrameBuffer &fb, const Point pos, long int delay) {
     auto current_time = std::chrono::system_clock::now();
     std::chrono::duration<double> diff = current_time - last_time;
     std::chrono::milliseconds duration = std::chrono::duration_cast<std::chrono::milliseconds>(diff);
@@ -60,13 +56,13 @@ void Animation::render(FrameBuffer & fb, const Point pos, long int delay) {
     }
 }
 
-void Animation::render(FrameBuffer & fb, const std::vector<Point> vpos, long int delay) {
+void Animation::render(FrameBuffer &fb, const std::vector<Point> vpos, long int delay) {
     auto current_time = std::chrono::system_clock::now();
     std::chrono::duration<double> diff = current_time - last_time;
     std::chrono::milliseconds duration = std::chrono::duration_cast<std::chrono::milliseconds>(diff);
     if (duration.count() > delay) {
         last_time = current_time;
-        for (auto & pos : vpos) {
+        for (auto &pos : vpos) {
             raw_render(fb, pos);
         }
         current_frame += 1;

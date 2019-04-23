@@ -1,10 +1,10 @@
 #ifndef __WINDOW_HPP__
 #define __WINDOW_HPP__
 
-#include <unistd.h>
-#include <termios.h>
-#include <functional>
 #include "framebuffer.hpp"
+#include <functional>
+#include <termios.h>
+#include <unistd.h>
 
 class Window {
     std::function<void()> init_func = {};
@@ -15,7 +15,8 @@ class Window {
 
     void set_stdin();
     void unset_stdin();
-public:
+
+  public:
     Window() {}
 
     void register_init(std::function<void()> init);

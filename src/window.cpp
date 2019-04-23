@@ -11,21 +11,13 @@ void Window::set_stdin() {
     tcsetattr(STDIN_FILENO, TCSANOW, &raw_term);
 }
 
-void Window::unset_stdin() {
-    tcsetattr(STDIN_FILENO, TCSANOW, &orig_term);
-}
+void Window::unset_stdin() { tcsetattr(STDIN_FILENO, TCSANOW, &orig_term); }
 
-void Window::register_init(std::function<void()> init) {
-    init_func = init;
-}
+void Window::register_init(std::function<void()> init) { init_func = init; }
 
-void Window::register_render(std::function<void(FrameBuffer &)> render) {
-    render_func = render;
-}
+void Window::register_render(std::function<void(FrameBuffer &)> render) { render_func = render; }
 
-void Window::register_keyboard(std::function<void(Window *, char)> keyboard) {
-    keyboard_func = keyboard;
-}
+void Window::register_keyboard(std::function<void(Window *, char)> keyboard) { keyboard_func = keyboard; }
 
 void Window::main_loop() {
     if (init_func) {
@@ -53,6 +45,4 @@ void Window::main_loop() {
     unset_stdin();
 }
 
-void Window::send_close() {
-    quit_flag = true;
-}
+void Window::send_close() { quit_flag = true; }

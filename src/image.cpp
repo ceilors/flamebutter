@@ -1,9 +1,9 @@
 #include "image.hpp"
 
-PNGImage::PNGImage(FILE * f) {
+PNGImage::PNGImage(FILE *f) {
     color_channels = 0;
     png_byte header[8];
-    
+
     fread(header, 1, 8, f);
     int is_png = !png_sig_cmp(header, 0, 8);
     if (!is_png) {
@@ -37,8 +37,8 @@ PNGImage::PNGImage(FILE * f) {
     png_set_sig_bytes(png_ptr, 8);
     png_read_info(png_ptr, info_ptr);
 
-    width = png_get_image_width(png_ptr, info_ptr);
-    height = png_get_image_height(png_ptr, info_ptr);
+    size.x = png_get_image_width(png_ptr, info_ptr);
+    size.y = png_get_image_height(png_ptr, info_ptr);
     auto color_type = png_get_color_type(png_ptr, info_ptr);
     auto bit_depth = png_get_bit_depth(png_ptr, info_ptr);
 
@@ -69,20 +69,20 @@ PNGImage::PNGImage(FILE * f) {
 
     png_read_update_info(png_ptr, info_ptr);
     int row_bytes = png_get_rowbytes(png_ptr, info_ptr);
-    raw = (uint8_t *) new png_byte[row_bytes * height];
+    raw = (uint8_t *)new png_byte[row_bytes * size.y];
     if (!raw) {
         png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
         fclose(f);
         throw std::runtime_error("empty raw data");
     }
-    png_bytepp row_pointers = new png_bytep[height];
+    png_bytepp row_pointers = new png_bytep[size.y];
     if (!row_pointers) {
         png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
         delete[] raw;
         fclose(f);
         throw std::runtime_error("row_pointers problem");
     }
-    for (uint32_t i = 0; i < height; ++i) {
+    for (uint32_t i = 0; i < (uint32_t)size.y; ++i) {
         row_pointers[i] = raw + i * row_bytes;
     }
     png_read_image(png_ptr, row_pointers);
@@ -91,8 +91,8 @@ PNGImage::PNGImage(FILE * f) {
     delete[] row_pointers;
 }
 
-PNGImage::PNGImage(const char * image) {
-    FILE * f = fopen(image, "r");
+PNGImage::PNGImage(const char *image) {
+    FILE *f = fopen(image, "r");
     if (!f) {
         throw std::runtime_error("fopen problem");
     }
@@ -100,17 +100,17 @@ PNGImage::PNGImage(const char * image) {
     fclose(f);
 }
 
-RAWImage::RAWImage(const char * image) {
-    FILE * f = fopen(image, "r");
+RAWImage::RAWImage(const char *image) {
+    FILE *f = fopen(image, "r");
     if (!f) {
         throw std::runtime_error("fopen problem");
     }
     uint32_t pitch = 0;
     color_channels = 4;
     fread(&pitch, sizeof(uint32_t), 1, f);
-    width = pitch / color_channels;
-    fread(&height, sizeof(uint32_t), 1, f);
-    raw = new uint8_t [pitch * height];
-    fread(raw, pitch * height, 1, f);
+    size.x = pitch / color_channels;
+    fread(&(size.y), sizeof(uint32_t), 1, f);
+    raw = new uint8_t[pitch * size.y];
+    fread(raw, pitch * size.y, 1, f);
     fclose(f);
 }

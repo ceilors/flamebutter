@@ -16,16 +16,19 @@ FrameBuffer::FrameBuffer(const char *device) {
     if (*(int *)screen_buffer == -1) {
         throw std::runtime_error("failed to map framebuffer device to memory");
     }
-    draw_buffer = new char [screen_size];
+    draw_buffer = new char[screen_size];
 }
 
 FrameBuffer::~FrameBuffer() {
-    delete [] draw_buffer;
+    delete[] draw_buffer;
     munmap(screen_buffer, screen_size);
     close(fbfd);
 }
 
 void FrameBuffer::draw_pixel(const Point point, Color color) {
+    if (point.x < 0 || point.y < 0 || point.x > (int32_t)vinfo.xres || point.y > (int32_t)vinfo.yres) {
+        return;
+    }
     long int location =
         (point.x + vinfo.xoffset) * (vinfo.bits_per_pixel / 8) + (point.y + vinfo.yoffset) * finfo.line_length;
     if (vinfo.bits_per_pixel == 32) {
@@ -35,30 +38,17 @@ void FrameBuffer::draw_pixel(const Point point, Color color) {
         *(draw_buffer + location + 0) = color.blue;
         *(draw_buffer + location + 1) = color.green;
         *(draw_buffer + location + 2) = color.red;
-        // no transparency
-        *(draw_buffer + location + 3) = 0;
+        *(draw_buffer + location + 3) = color.alpha;
     } else {
         unsigned short int c = color.red << 11 | color.green << 5 | color.blue;
         *((unsigned short int *)(draw_buffer + location)) = c;
     }
 }
 
-void FrameBuffer::draw_rectangle(Rect rect, Color color) {
-    for (uint32_t y = rect.p1.y; y < rect.p2.y; ++y) {
-        for (uint32_t x = rect.p1.x; x < rect.p2.x; ++x) {
+void FrameBuffer::draw_rect(Rect rect, Color color) {
+    for (int32_t y = rect.p1.y; y < rect.p2.y; ++y) {
+        for (int32_t x = rect.p1.x; x < rect.p2.x; ++x) {
             draw_pixel({x, y}, color);
-        }
-    }
-}
-
-void FrameBuffer::draw_image(const Point point, const Image * image, bool ignore_alpha) {
-    for (uint32_t y = 0; y < image->height; ++y) {
-        for (uint32_t x = 0; x < image->width; ++x) {
-            Color pixel = image->get_pixel(x, y);
-            if (ignore_alpha && pixel.alpha == 0) {
-                continue;
-            }
-            draw_pixel({point.x + x, point.y + y}, pixel);
         }
     }
 }
@@ -135,22 +125,6 @@ void FrameBuffer::draw_framed_rect(Rect l, Color color) {
     draw_line({p4, p1}, color);
 }
 
-void FrameBuffer::draw_image_rect(Rect wnd, Rect pos, const Image * image, bool ignore_alpha) {
-    for (uint32_t y = 0; y < wnd.p2.y; ++y) {
-        for (uint32_t x = 0; x < wnd.p2.x; ++x) {
-            Color pixel = image->get_pixel(wnd.p1.x + x, wnd.p1.y + y);
-            if (ignore_alpha && pixel.alpha == 0) {
-                continue;
-            }
-            draw_pixel({pos.p1.x + x, pos.p1.y + y}, pixel);
-        }
-    }
-}
+void FrameBuffer::clear_screen(Color color) { draw_rect({0, 0, (int32_t)vinfo.xres, (int32_t)vinfo.yres}, color); }
 
-void FrameBuffer::clear_screen(Color color) {
-    draw_rectangle({0, 0, vinfo.xres, vinfo.yres}, color);
-}
-
-void FrameBuffer::swap_buffer() {
-    memcpy(screen_buffer, draw_buffer, screen_size);
-}
+void FrameBuffer::swap_buffer() { memcpy(screen_buffer, draw_buffer, screen_size); }
